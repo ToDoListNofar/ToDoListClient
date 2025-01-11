@@ -20,6 +20,7 @@ export const addTask = async (task: {
 }) => {
   try {
     const response = await axios.post(API_URL + "/addTask/", task);
+
     return response.data;
   } catch (error) {
     console.error("Error adding task", error);

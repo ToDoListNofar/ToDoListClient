@@ -10,6 +10,7 @@ import { HiOutlineSave } from "react-icons/hi";
 import { Task } from "../types/task";
 import { AddTask } from "./AddTask";
 import { getTasks, removeTask } from "../services/taskService";
+import toast from "react-hot-toast";
 
 export const Feed = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -22,29 +23,31 @@ export const Feed = () => {
   //fetch tasks from mysql db
   useEffect(() => {
     const fetchTasks = async () => {
-      const tasksFromApi = await getTasks();
-      setTasks(tasksFromApi);
+      try {
+        const tasksList = await getTasks();
+        setTasks(tasksList);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+        toast.error("Failed to load tasks. Please try again later.");
+      }
     };
 
     fetchTasks();
-  }, []);
-
-  // Save tasks to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
+  // Save tasks to localStorage whenever they change
+  /*useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+*/
   const addTask = (newTask: Task) => {
-    console.log("task added");
-    setTasks([...tasks, newTask]);
+    console.log("task added succesfully");
     closeModal();
   };
 
   const handleRemoveTask = async (taskId: number) => {
     try {
       await removeTask(taskId);
-      const tasksFromApi = await getTasks();
-      setTasks(tasksFromApi);
     } catch (error) {
       console.error("Error removing task:", error);
     }
@@ -160,7 +163,7 @@ export const Feed = () => {
           <div className="bg-white p-8 rounded-lg shadow-lg w-3/4 max-w-lg">
             <button
               onClick={closeModal}
-              className="absolute top-1/3 right-1/2 text-gray-500 hover:text-black"
+              className="absolute  top-4 right-4 text-gray-500 hover:text-black"
             >
               ✖
             </button>
