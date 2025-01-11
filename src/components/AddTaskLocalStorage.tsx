@@ -2,31 +2,27 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { NewTask } from "../types/task";
-import { addTask } from "../services/taskService";
 
 export const AddTask = ({ onSave }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (title.length < 4 || description.length < 4) {
       toast.error("Please fill in all fields correctly.");
       return;
     }
+
     const newTask: NewTask = {
       title: title,
       description: description,
       completed: false,
     };
-    try {
-      const savedTask = await addTask(newTask);
-      toast.success("Task added successfully!");
-      onSave(savedTask);
-      setTitle("");
-      setDescription("");
-    } catch (error) {
-      console.error("Error saving task:", error);
-    }
+
+    onSave(newTask);
+    setTitle("");
+    setDescription("");
+    toast.success("Task added successfully!");
   };
 
   function HandleTitleChange(e) {
