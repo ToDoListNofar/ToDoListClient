@@ -22,9 +22,11 @@ export const register = async (
 export const login = async (email: string, password: string) => {
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
-    const { token } = response.data;
+    const { token, userId } = response.data;
 
     localStorage.setItem("authToken", token);
+    localStorage.setItem("userId", userId);
+
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.error || "Failed to login");
@@ -32,4 +34,5 @@ export const login = async (email: string, password: string) => {
 };
 export const logout = () => {
   localStorage.removeItem("authToken");
+  localStorage.removeItem("userId");
 };

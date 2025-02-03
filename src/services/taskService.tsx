@@ -11,7 +11,15 @@ export const getTasks = async () => {
     return [];
   }
 };
-
+export const getUserTasks = async (userId: number) => {
+  try {
+    const response = await axios.get(`${API_URL}/getUserTasks/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user tasks", error);
+    return [];
+  }
+};
 export const addTask = async (task: {
   title: string;
   description?: string;

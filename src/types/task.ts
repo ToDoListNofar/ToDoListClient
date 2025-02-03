@@ -9,5 +9,6 @@ export type Task = {
 export type NewTask = {
   title: string;
   description: string;
-  completed: Falsr;
+  completed: boolean;
+  user_id: number;
 };

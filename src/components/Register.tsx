@@ -106,7 +106,7 @@ export const Register = () => {
               </div>
             </div>
           </div>
-          <button className="mt-10 hover:font-bold" onClick={handleRegister}>
+          <button className="mt-5 hover:font-bold" onClick={handleRegister}>
             Register
           </button>
           <h3 className="text-sm font-normal text-center">
