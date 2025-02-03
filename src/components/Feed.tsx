@@ -9,13 +9,17 @@ import { FiTrash2 } from "react-icons/fi";
 import { HiOutlineSave } from "react-icons/hi";
 import { Task } from "../types/task";
 import { AddTask } from "./AddTask";
-import { getTasks, removeTask } from "../services/taskService";
-import toast from "react-hot-toast";
+import { getUserTasks, removeTask } from "../services/taskService";
+import { logout } from "../services/authService";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 export const Feed = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -24,7 +28,13 @@ export const Feed = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const tasksList = await getTasks();
+        const user_id = localStorage.getItem("userId");
+        if (!user_id) {
+          toast.error("User ID not found. Please log in again.");
+          return;
+        }
+
+        const tasksList = await getUserTasks(Number(user_id));
         setTasks(tasksList);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -35,11 +45,6 @@ export const Feed = () => {
     fetchTasks();
   }, [tasks]);
 
-  // Save tasks to localStorage whenever they change
-  /*useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
-*/
   const addTask = (newTask: Task) => {
     console.log("task added succesfully");
     closeModal();
@@ -48,6 +53,7 @@ export const Feed = () => {
   const handleRemoveTask = async (taskId: number) => {
     try {
       await removeTask(taskId);
+      setTasks(tasks.filter((task) => task.id !== taskId));
     } catch (error) {
       console.error("Error removing task:", error);
     }
@@ -77,8 +83,18 @@ export const Feed = () => {
   const handleSaveTask = (index: number) => {
     setEditingIndex(null);
   };
+  const handleLogout = async () => {
+    await logout;
+    navigate("/login");
+  };
   return (
     <main className="pt-8 px-8 pb-4 flex flex-col items-center justify-center w-full gap-1">
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-1 mb-3 hover:underline"
+      >
+        Logout
+      </button>
       <h1 className="text-5xl font-semibold mb-8">To Do List</h1>
       <button
         onClick={openModal}

@@ -20,13 +20,16 @@ export const Login = () => {
   const handleLogin = async () => {
     try {
       await login(email, password);
+      setEmail("");
+      setPassword("");
       toast.success("Login successful!");
-      setTimeout(() => navigate("/feed"), 1000);
+      setTimeout(() => navigate("/feed"), 500);
     } catch (error: any) {
-      console.log("login failed " + error.message);
-      toast.error(error.message);
+      console.log("Login failed:", error);
+      toast.error(error.message || "Login failed, please try again.");
     }
   };
+
   const handleClickRegister = async () => {
     navigate("/register");
   };
@@ -82,10 +85,13 @@ export const Login = () => {
               </div>
             </div>
           </div>
-          <button className="mt-10 hover:font-bold" onClick={handleLogin}>
+          <button
+            className="mt-7 hover:font-bold justify-center"
+            onClick={handleLogin}
+          >
             Login
           </button>
-          <h3 className="text-sm font-normal text-center">
+          <h3 className="text-sm font-normal text-center mt-12">
             Don't have an accout?
             <button
               className="text-sm font-bold text-center "
